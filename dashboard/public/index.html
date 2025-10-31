@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Load Balancer Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>🔄 Load Balancer Dashboard</h1>
+            <p class="subtitle">Real-Time Monitoring & Control</p>
+        </div>
+        <div class="header-status">
+            <div class="status-indicator" id="connection-status">
+                <span class="status-dot"></span>
+                <span class="status-text">Connecting...</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="control-section">
+            <div class="section-header">
+                <h2>⚙️ Load Balancing Algorithm</h2>
+            </div>
+            <div class="algorithm-control">
+                <div class="current-algorithm">
+                    <strong>Current Algorithm:</strong> 
+                    <span id="current-algorithm" class="algorithm-badge">Loading...</span>
+                </div>
+                <div class="algorithm-selector">
+                    <label for="algorithm-select">Change Algorithm:</label>
+                    <select id="algorithm-select">
+                        <option value="">Select Algorithm...</option>
+                    </select>
+                </div>
+                <div class="algorithm-description" id="algorithm-description">
+                    <p>Select an algorithm to see its description</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="metrics-section">
+            <div class="section-header">
+                <h2>📊 Global Metrics</h2>
+            </div>
+            <div id="metrics-container" class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-icon">📈</div>
+                    <h3>Total Requests</h3>
+                    <div class="metric-value" id="metric-total-requests">-</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">⚡</div>
+                    <h3>Avg Response Time</h3>
+                    <div class="metric-value" id="metric-avg-response">-</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">🖥️</div>
+                    <h3>Healthy Servers</h3>
+                    <div class="metric-value" id="metric-healthy-servers">-</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">🔌</div>
+                    <h3>Active Connections</h3>
+                    <div class="metric-value" id="metric-connections">-</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">👥</div>
+                    <h3>Unique Clients</h3>
+                    <div class="metric-value" id="metric-unique-clients">-</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon">⏱️</div>
+                    <h3>Uptime</h3>
+                    <div class="metric-value" id="metric-uptime">-</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="control-section">
+            <div class="section-header">
+                <h2>🧪 Test Load Balancer</h2>
+            </div>
+            <div class="test-controls">
+                <button id="send-request-btn" class="test-button">Send 1 Request</button>
+                <button id="send-10-requests-btn" class="test-button">Send 10 Requests</button>
+                <button id="send-50-requests-btn" class="test-button">Send 50 Requests</button>
+                <button id="clear-results-btn" class="test-button secondary">Clear Results</button>
+            </div>
+            <div class="custom-request-section">
+                <div class="custom-request-header">
+                    <h3>📝 Custom Request Configuration</h3>
+                    <div class="config-mode-toggle">
+                        <button id="mode-uniform-btn" class="mode-btn active">⚖️ Uniform Load</button>
+                        <button id="mode-individual-btn" class="mode-btn">🎯 Individual Load</button>
+                    </div>
+                </div>
+                
+                <div id="uniform-mode" class="config-mode">
+                    <div class="custom-request-controls">
+                        <div class="input-group">
+                            <label for="custom-request-count">Number of Requests:</label>
+                            <input type="number" id="custom-request-count" min="1" max="1000" value="25" class="custom-input">
+                        </div>
+                        <div class="input-group">
+                            <label for="request-load">Simulated Load (ms):</label>
+                            <input type="number" id="request-load" min="0" max="5000" value="0" class="custom-input">
+                            <span class="input-hint">0 = no delay, higher = more server load</span>
+                        </div>
+                        <div class="input-group">
+                            <label for="concurrent-requests">Send Concurrently:</label>
+                            <input type="checkbox" id="concurrent-requests" checked class="custom-checkbox">
+                            <span class="input-hint">Uncheck to send sequentially</span>
+                        </div>
+                        <button id="send-custom-btn" class="test-button primary-action">🚀 Send Custom Requests</button>
+                    </div>
+                </div>
+
+                <div id="individual-mode" class="config-mode" style="display: none;">
+                    <div class="individual-controls">
+                        <div class="individual-header">
+                            <div class="input-group-inline">
+                                <label for="individual-count">Number of Requests:</label>
+                                <input type="number" id="individual-count" min="1" max="50" value="10" class="custom-input-small">
+                                <button id="generate-inputs-btn" class="test-button secondary">Generate Inputs</button>
+                            </div>
+                            <div class="preset-buttons">
+                                <span class="preset-label">Quick Fill:</span>
+                                <button id="preset-zero-btn" class="preset-btn">All 0ms</button>
+                                <button id="preset-equal-btn" class="preset-btn">Equal 500ms</button>
+                                <button id="preset-random-btn" class="preset-btn">Random</button>
+                                <button id="preset-increasing-btn" class="preset-btn">Increasing</button>
+                            </div>
+                        </div>
+                        <div id="individual-inputs-container" class="individual-inputs">
+                            <p class="input-hint">Click "Generate Inputs" to create load fields for each request</p>
+                        </div>
+                        <div class="individual-actions">
+                            <div class="input-group">
+                                <label for="individual-concurrent">Send Concurrently:</label>
+                                <input type="checkbox" id="individual-concurrent" checked class="custom-checkbox">
+                            </div>
+                            <button id="send-individual-btn" class="test-button primary-action">🎯 Send Individual Requests</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="test-result" class="test-result"></div>
+        </section>
+
+        <section class="server-section">
+            <div class="section-header">
+                <h2>🖥️ Server Pool Status</h2>
+                <div class="legend">
+                    <div class="legend-item">
+                        <span class="status-box up"></span> 
+                        <span>UP</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="status-box down"></span> 
+                        <span>DOWN</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="status-box unknown"></span> 
+                        <span>UNKNOWN</span>
+                    </div>
+                </div>
+            </div>
+            <div id="server-pool-container" class="server-grid">
+            </div>
+        </section>
+
+        <section class="visualization-section">
+            <div class="section-header">
+                <h2>📊 Request Distribution Visualization</h2>
+                <div class="viz-controls">
+                    <button id="refresh-viz-btn" class="viz-button">🔄 Refresh</button>
+                </div>
+            </div>
+            <div class="visualization-info">
+                <p>Visual representation of how the <strong id="viz-algorithm-name">LEAST_CONNECTIONS</strong> algorithm distributes requests across servers.</p>
+            </div>
+            <div id="visualization-container" class="visualization-content">
+                <div class="visualization-placeholder">
+                    <div class="placeholder-icon">📈</div>
+                    <p>Send test requests to see the distribution pattern</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="live-log-section">
+            <div class="section-header">
+                <h2>🔴 Live Request Processing</h2>
+                <div class="log-controls">
+                    <button id="clear-log-btn" class="log-button">🗑️ Clear Log</button>
+                    <button id="pause-log-btn" class="log-button">⏸️ Pause</button>
+                    <label class="log-toggle">
+                        <input type="checkbox" id="auto-scroll-toggle" checked>
+                        <span>Auto-scroll</span>
+                    </label>
+                </div>
+            </div>
+            <div class="live-log-info">
+                <p>Real-time view of how the <strong id="log-algorithm-name">LEAST_CONNECTIONS</strong> algorithm processes each incoming request</p>
+            </div>
+            <div id="live-log-container" class="live-log-content">
+                <div class="log-placeholder">
+                    <div class="placeholder-icon">📝</div>
+                    <p>Waiting for requests... Send test requests to see live processing</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>Dashboard updates every 2 seconds | Load Balancer on port 8080</p>
+            <p class="footer-links">
+                <a href="http://localhost:8080/api/health" target="_blank">Health Check</a> | 
+                <a href="http://localhost:8080/admin/metrics" target="_blank">API Metrics</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

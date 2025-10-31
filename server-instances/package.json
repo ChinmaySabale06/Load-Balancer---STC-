@@ -1,0 +1,30 @@
+{
+  "name": "platefull-server-instances",
+  "version": "1.0.0",
+  "description": "Multiple Platefull server instances for load balancing",
+  "main": "start-instance.js",
+  "scripts": {
+    "start": "node start-instance.js",
+    "instance1": "node start-instance.js 5001",
+    "instance2": "node start-instance.js 5002",
+    "instance3": "node start-instance.js 5003"
+  },
+  "keywords": [
+    "platefull",
+    "server",
+    "instance"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "mongoose": "^8.16.4",
+    "dotenv": "^17.2.0",
+    "cors": "^2.8.5",
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.2",
+    "node-appwrite": "^19.1.0"
+  }
+}
